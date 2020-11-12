@@ -10,7 +10,7 @@
         public bool PaymentsToDeposit { get; set; }
         public bool CanBeTerminated { get; set; }
         
-        public DepositBranch DepositBranchId { get; set; }
+        public int DepositBranchId { get; set; }
         public DepositBranch DepositBranch { get; set; }
     }
 }
