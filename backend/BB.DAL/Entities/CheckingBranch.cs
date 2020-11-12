@@ -2,7 +2,7 @@
 {
     public class CheckingBranch
     {
-        public int CheckBranchId { get; set; }
+        public int CheckingBranchId { get; set; }
         public decimal Balance { get; set; }
         
         public int CardId { get; set; }

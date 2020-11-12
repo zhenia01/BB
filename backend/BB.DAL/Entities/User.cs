@@ -8,6 +8,6 @@ namespace BB.DAL.Entities
         public string Name { get; set; }
         public string LastName { get; set; }
 
-        private List<Card> Cards { get; } = new List<Card>();
+        public List<Card> Cards { get; set; }
     }
 }
