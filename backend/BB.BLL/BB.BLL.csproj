@@ -3,5 +3,15 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Interfaces" />
+      <Folder Include="MappingProfiles" />
+      <Folder Include="Services" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    </ItemGroup>
     
 </Project>
