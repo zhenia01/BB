@@ -6,6 +6,7 @@ namespace BB.DAL.Entities
     {
         public int CardId { get; set; }
         public string Pin { get; set; }
+        public string Number { get; set; }
         public bool IsBlocked { get; set; }
         
         public int UserId { get; set; }

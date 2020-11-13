@@ -38,11 +38,15 @@ namespace BB.DAL.Migrations
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Pin")
+                    b.Property<string>("Number")
                         .IsRequired()
                         .HasMaxLength(4)
                         .HasColumnType("nchar(4)")
                         .IsFixedLength(true);
+
+                    b.Property<string>("Pin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

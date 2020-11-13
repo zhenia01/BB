@@ -8,7 +8,8 @@ namespace BB.DAL.Context.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Card> model)
         {
-            model.Property(c => c.Pin).IsRequired().IsFixedLength().HasMaxLength(4);
+            model.Property(c => c.Number).IsRequired().IsFixedLength().HasMaxLength(4);
+            model.Property(c => c.Pin).IsRequired();
         }
     }
 }
