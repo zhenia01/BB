@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using BB.BLL.Interfaces;
+using BB.BLL.MappingProfiles;
+using BB.BLL.Services;
 using BB.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +43,9 @@ namespace BB.API
 
             services.AddDbContext<BBContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:BBDBConnection"],
                 opts => opts.MigrationsAssembly(typeof(BBContext).Assembly.GetName().Name)));
+            
+            services.AddAutoMapper(typeof(UserProfile).Assembly);
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
