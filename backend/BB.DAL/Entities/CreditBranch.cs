@@ -11,7 +11,6 @@ namespace BB.DAL.Entities
         public TimeSpan TimeOver { get; set; }
         public decimal Debt { get; set; }
         
-        public int? CardId { get; set; }
         public Card Card { get; set; }
     }
 }
