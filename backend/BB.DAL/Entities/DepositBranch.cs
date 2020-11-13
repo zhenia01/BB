@@ -6,7 +6,6 @@ namespace BB.DAL.Entities
     {
         public int DepositBranchId { get; set; }
         
-        public int? CardId { get; set; }
         public Card Card { get; set; }
         
         public List<Deposit> Deposits { get; set; }

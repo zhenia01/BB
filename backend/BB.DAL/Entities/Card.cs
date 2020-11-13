@@ -12,8 +12,13 @@ namespace BB.DAL.Entities
         public User User { get; set; }
         
         public DepositBranch DepositBranch { get; set; }
+        public int? DepositBranchId { get; set; }
+        
         public CreditBranch CreditBranch { get; set; }
+        public int? CreditBranchId { get; set; }
+        
         public CheckingBranch CheckingBranch { get; set; }
+        public int CheckingBranchId { get; set; }
 
     }
 }
