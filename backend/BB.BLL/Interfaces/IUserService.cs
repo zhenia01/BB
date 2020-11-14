@@ -9,7 +9,7 @@ namespace BB.BLL.Interfaces
     public interface IUserService
     {
         Task<UserDto> GetUserById(int id);
-        Task<UserDto> GetUserByCardId(int card);
+        Task<UserDto> GetUserByCardNum(string num);
         Task<ReadOnlyCollection<UserDto>> GetAll();
     }
 }
