@@ -24,11 +24,11 @@ namespace BB.BLL.Services
             return Mapper.Map<UserDto>(user);
         }
         
-        public async Task<UserDto> GetUserByCardId(int cardId)
+        public async Task<UserDto> GetUserByCardNum(string num)
         {
             var user = (await  Context.Cards.AsNoTracking()
                 .Include(c => c.User)
-                .Where(c => c.CardId == cardId)
+                .Where(c => c.Number == num)
                 .FirstOrDefaultAsync())?.User;
             
             return Mapper.Map<UserDto>(user);
