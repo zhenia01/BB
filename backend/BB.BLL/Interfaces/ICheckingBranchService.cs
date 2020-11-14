@@ -1,0 +1,13 @@
+using System.Threading.Tasks;
+using BB.Common.Dto;
+
+namespace BB.BLL.Interfaces
+{
+    public interface ICheckingBranchService
+    {
+        Task<BalanceDto> CheckBalance(int cardId);
+        Task Withdraw(int cardId, decimal amount);
+        Task TopUp(int cardId, decimal amount);
+        Task Transfer(int cardId, string targetCardNum, decimal amount);
+    }
+}
