@@ -32,10 +32,10 @@ namespace BB.API.Controllers
             return await _userService.GetUserById(id);
         }
 
-        [HttpGet("card/{cardId}")]
-        public async Task<UserDto> GetByCardId(int cardId)
+        [HttpGet("card/{cardNum}")]
+        public async Task<UserDto> GetByCardId(string cardNum)
         {
-            return await _userService.GetUserByCardId(cardId);
+            return await _userService.GetUserByCardNum(cardNum);
         }
     }
 }
