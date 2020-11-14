@@ -46,6 +46,8 @@ namespace BB.API
             
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICardService, CardService>();
+            services.AddScoped<ICheckingBranchService, CheckingBranchService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
