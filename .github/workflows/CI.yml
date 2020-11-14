@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the dev branch
@@ -31,3 +31,17 @@ jobs:
           
       - name: Build .NET
         run: dotnet build backend/BB.sln
+    
+  build_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 12.x
+      - name: Install packages and build Angular
+        run: |
+          cd frontend
+          npm ci
+          npm run build
