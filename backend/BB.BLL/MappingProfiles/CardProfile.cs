@@ -1,5 +1,6 @@
 using AutoMapper;
 using BB.Common.Dto;
+using BB.Common.Dto.Card;
 using BB.DAL.Entities;
 
 namespace BB.BLL.MappingProfiles
@@ -13,6 +14,7 @@ namespace BB.BLL.MappingProfiles
             CreateMap<Card, BalanceDto>()
                 .ForMember(b => b.CheckingBalance, opt => opt.MapFrom(card => card.CheckingBranch.Balance))
                 .ForMember(b => b.CreditBalance, opt => opt.MapFrom(card => card != null ? card.CreditBranch.Balance : 0));
+            CreateMap<CardCredentialsDto, Card>();
         }
     }
 }
