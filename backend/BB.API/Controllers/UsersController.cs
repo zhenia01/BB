@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using BB.BLL.Interfaces;
-using BB.Common.Dto;
-using Microsoft.AspNetCore.Authorization;
+using BB.Common.Dto.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BB.API.Controllers

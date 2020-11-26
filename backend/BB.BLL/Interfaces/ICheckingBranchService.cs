@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using BB.Common.Dto;
+using BB.Common.Dto.Balance;
 
 namespace BB.BLL.Interfaces
 {

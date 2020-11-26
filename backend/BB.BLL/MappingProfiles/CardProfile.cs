@@ -1,5 +1,5 @@
 using AutoMapper;
-using BB.Common.Dto;
+using BB.Common.Dto.Balance;
 using BB.Common.Dto.Card;
 using BB.DAL.Entities;
 

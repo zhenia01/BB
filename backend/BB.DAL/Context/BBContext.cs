@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using BB.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,4 @@
 using BB.DAL.Context.EntityConfigurations;
-using BB.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BB.DAL.Context

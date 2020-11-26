@@ -4,23 +4,14 @@ using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
 using BB.DAL.Context;
 using AutoMapper;
-using BB.Common.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using BC = BCrypt.Net.BCrypt;
-using System.Threading.Tasks;
-using AutoMapper;
-using BB.BLL.Interfaces;
-using BB.BLL.Services.Abstract;
-using BB.Common.Dto;
 using BB.Common.Dto.Card;
-using BB.DAL.Context;
 using BB.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -28,7 +19,13 @@ namespace BB.BLL.Services
 {
     public class CardService : BaseService, ICardService
     {
-        public CardService(BBContext context, IMapper mapper) : base(context, mapper) {}
+        private readonly IConfiguration _configuration;
+        
+        public CardService(IConfiguration configuration, BBContext context, IMapper mapper) : base(context, mapper)
+        {
+            _configuration = configuration;
+        }
+
 
         public async Task<CardDto> GetCardById(int id)
         {
@@ -52,14 +49,8 @@ namespace BB.BLL.Services
                 .ToListAsync();
 
             return Mapper.Map<ReadOnlyCollection<CardDto>>(cards);
-        
-        private readonly IConfiguration _configuration;
-        
-        public CardService(IConfiguration configuration, BBContext context, IMapper mapper) : base(context, mapper)
-        {
-            _configuration = configuration;
         }
-
+        
         public async Task<(CardDto card, string token)> Login(CardCredentialsDto cardCredentials)
         {
             (string number, string pin) = cardCredentials;

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using BB.BLL.Interfaces;
-using BB.Common.Dto;
+using BB.Common.Dto.Balance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BB.API.Controllers

@@ -1,6 +1,4 @@
-using System;
-
-namespace BB.Common.Dto
+namespace BB.Common.Dto.Balance
 {
     public record BalanceDto
     {

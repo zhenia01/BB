@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace BB.DAL.Entities
+﻿namespace BB.DAL.Entities
 {
     public class Card
     {

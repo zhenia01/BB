@@ -1,28 +1,30 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
-using BB.Common.Dto;
+using BB.Common.Dto.Balance;
 using BB.DAL.Context;
 using BB.DAL.Entities;
-using BB.DAL.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace BB.BLL.Services
 {
     public class CheckingBranchService : BaseService, ICheckingBranchService
     {
-        public CheckingBranchService(BBContext context, IMapper mapper) : base(context, mapper){}
+        public CheckingBranchService(BBContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
 
         public async Task<BalanceDto> CheckBalance(int cardId)
         {
-            var card = await (Context.Cards.AsNoTracking()
-                    .Include(c => c.CheckingBranch)
-                    .Include(c => c.CreditBranch).DefaultIfEmpty()
-                    .Where(c => c.CardId == cardId)
-                    .FirstOrDefaultAsync());
+            var card = await Context.Cards.AsNoTracking()
+                .Include(c => c.CheckingBranch)
+                .Include(c => c.CreditBranch).DefaultIfEmpty()
+                .Where(c => c.CardId == cardId)
+                .FirstOrDefaultAsync();
 
             return Mapper.Map<BalanceDto>(card);
         }
@@ -30,25 +32,41 @@ namespace BB.BLL.Services
         public async Task Withdraw(int cardId, decimal amount)
         {
             PositiveAmount(amount);
-            
-             var card = await (Context.Cards
+
+            var card = await Context.Cards
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
                 .Where(c => c.CardId == cardId)
-                .FirstOrDefaultAsync());
+                .FirstOrDefaultAsync();
 
-            card.CreditBranch.Balance -= amount;
-            
-            CorrectBalance(card);
-            UpdateCredit(card);
-            
+            var checkingBalance = card.CheckingBranch.Balance;
+
+            if (checkingBalance >= amount)
+            {
+                card.CheckingBranch.Balance -= amount;
+            }
+            else
+            {
+                var creditBalance = card.CreditBranch.Balance;
+
+                if (creditBalance >= amount - checkingBalance)
+                {
+                    card.CheckingBranch.Balance = 0;
+                    card.CreditBranch.Balance -= amount - checkingBalance;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Not enough money");
+                }
+            }
+
             await Context.SaveChangesAsync();
         }
 
         public async Task TopUp(int cardId, decimal amount)
         {
             PositiveAmount(amount);
-            
+
             var card = await (Context.Cards
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
@@ -56,25 +74,25 @@ namespace BB.BLL.Services
                 .FirstOrDefaultAsync());
 
             card.CreditBranch.Balance += amount;
-            UpdateCredit(card);
-            
+            // UpdateCredit(card);
+
             await Context.SaveChangesAsync();
         }
 
         public async Task Transfer(int cardId, string targetCardNum, decimal amount)
         {
             PositiveAmount(amount);
-            
+
             var cardSrc = await (Context.Cards
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
-                .Where(c => c.CardId == cardId )
+                .Where(c => c.CardId == cardId)
                 .FirstOrDefaultAsync());
 
             var cardDest = await (Context.Cards
                     .Include(c => c.CheckingBranch))
-                    .Where(c => c.Number == targetCardNum)
-                    .FirstOrDefaultAsync();
+                .Where(c => c.Number == targetCardNum)
+                .FirstOrDefaultAsync();
 
             if (cardSrc.Number == cardDest.Number)
             {
@@ -83,42 +101,21 @@ namespace BB.BLL.Services
 
             cardSrc.CheckingBranch.Balance -= amount;
             cardDest.CheckingBranch.Balance += amount;
-            
-            CorrectBalance(cardSrc);
-            
-            UpdateCredit(cardSrc);
-            UpdateCredit(cardDest);
-            
+
+            // CorrectBalance(cardSrc);
+            //
+            // UpdateCredit(cardSrc);
+            // UpdateCredit(cardDest);
+
             await Context.SaveChangesAsync();
         }
-        
-        
 
-        private void PositiveAmount(decimal amount)
+        private static void PositiveAmount(decimal amount)
         {
-            if (amount < 0)
+            if (amount <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(amount), "Amount should be positive");
             }
-        }
-        
-        private void CorrectBalance(Card card)
-        {
-            if (card.CheckingBranch.Balance < 0 && card.CreditBranch.Balance == 0)
-            {
-                throw new ArgumentException("Your card isYou can't have negative balance");
-            }
-
-            if (card.CreditBranch.Balance != 0 && card.CheckingBranch.Balance < -card.CreditBranch.Balance)
-            {
-                throw new ArgumentException("You can't exceed your credit limit");
-
-            }
-        }
-
-        private void UpdateCredit(Card card)
-        {
-            //TODO
         }
     }
 }

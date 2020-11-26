@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using BB.Common.Dto;
+using BB.Common.Dto.User;
 
 namespace BB.BLL.Interfaces
 {

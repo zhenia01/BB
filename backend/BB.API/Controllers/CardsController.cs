@@ -1,16 +1,7 @@
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using BB.BLL.Interfaces;
-using BB.Common.Dto;
-using Microsoft.AspNetCore.Mvc;
-
-
-namespace BB.API.Controllers
-{
-using System.Threading.Tasks;
-using BB.BLL.Interfaces;
-using BB.Common.Dto;
 using BB.Common.Dto.Card;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

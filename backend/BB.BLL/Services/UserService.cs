@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
-using BB.Common.Dto;
+using BB.Common.Dto.User;
 using BB.DAL.Context;
-using BB.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BB.BLL.Services
