@@ -44,4 +44,4 @@ jobs:
         run: |
           cd frontend
           npm ci
-          npm build
+          npm run-script build
