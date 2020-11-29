@@ -8,6 +8,6 @@ namespace BB.BLL.Interfaces
         Task<BalanceDto> CheckBalance(int cardId);
         Task Withdraw(int cardId, decimal amount);
         Task TopUp(int cardId, decimal amount);
-        Task Transfer(int cardId, string targetCardNum, decimal amount);
+        Task Transfer(int sourceCardId, string targetCardNum, decimal amount);
     }
 }

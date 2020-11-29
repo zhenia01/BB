@@ -18,8 +18,9 @@ namespace BB.BLL.Services
         
         public async Task PunishForDebts(CancellationToken stoppingToken)
         {
-            var debtors = Context.CreditBranches
-                .Where(cb => cb.Balance < cb.Available && cb.WithdrawTime.HasValue && (cb.WithdrawTime.Value - DateTime.Now).Seconds )
+            // TODO punishments
+            // var debtors = Context.CreditBranches
+            //     .Where(cb => cb.Balance < cb.Available && cb.WithdrawTime.HasValue && (cb.WithdrawTime.Value - DateTime.Now).Seconds )
         }
     }
 }

@@ -13,7 +13,7 @@ namespace BB.BLL.MappingProfiles
             CreateMap<CardDto, Card>();
             CreateMap<Card, BalanceDto>()
                 .ForMember(b => b.CheckingBalance, opt => opt.MapFrom(card => card.CheckingBranch.Balance))
-                .ForMember(b => b.CreditBalance, opt => opt.MapFrom(card => card != null ? card.CreditBranch.Balance : 0));
+                .ForMember(b => b.CreditBalance, opt => opt.MapFrom(card => card.CreditBranch.Balance));
             CreateMap<CardCredentialsDto, Card>();
         }
     }

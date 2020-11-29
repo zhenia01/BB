@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
 using BB.Common.Dto.Balance;
@@ -24,35 +24,33 @@ namespace BB.BLL.Services
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
                 .Where(c => c.CardId == cardId)
-                .FirstOrDefaultAsync();
+                .SingleAsync();
 
             return Mapper.Map<BalanceDto>(card);
         }
 
         public async Task Withdraw(int cardId, decimal amount)
         {
-            PositiveAmount(amount);
+            CheckForPositiveAmount(amount);
 
             var card = await Context.Cards
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
                 .Where(c => c.CardId == cardId)
-                .FirstOrDefaultAsync();
+                .SingleAsync();
 
-            var checkingBalance = card.CheckingBranch.Balance;
-
-            if (checkingBalance >= amount)
+            if (card.CheckingBranch.Balance >= amount)
             {
                 card.CheckingBranch.Balance -= amount;
             }
             else
             {
-                var creditBalance = card.CreditBranch.Balance;
+                var diff = amount - card.CheckingBranch.Balance;
 
-                if (creditBalance >= amount - checkingBalance)
+                if (card.CheckingBranch.Balance >= diff)
                 {
                     card.CheckingBranch.Balance = 0;
-                    card.CreditBranch.Balance -= amount - checkingBalance;
+                    card.CheckingBranch.Balance -= diff;
                 }
                 else
                 {
@@ -65,52 +63,88 @@ namespace BB.BLL.Services
 
         public async Task TopUp(int cardId, decimal amount)
         {
-            PositiveAmount(amount);
+            CheckForPositiveAmount(amount);
 
-            var card = await (Context.Cards
+            var card = await Context.Cards
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
                 .Where(c => c.CardId == cardId)
-                .FirstOrDefaultAsync());
+                .SingleAsync();
 
-            card.CreditBranch.Balance += amount;
-            // UpdateCredit(card);
+            card.CheckingBranch.Balance += amount;
+            CheckCredit(card);
 
             await Context.SaveChangesAsync();
         }
 
-        public async Task Transfer(int cardId, string targetCardNum, decimal amount)
+        private static void CheckCredit(Card card)
         {
-            PositiveAmount(amount);
+            if (card.CreditBranch != null)
+            {
+                if (card.CreditBranch.Balance < card.CreditBranch.Available)
+                {
+                    var diff = card.CreditBranch.Available - card.CreditBranch.Balance;
+                    if (diff < card.CheckingBranch.Balance)
+                    {
+                        card.CreditBranch.Balance = card.CreditBranch.Available;
+                        card.CheckingBranch.Balance -= diff;
+                    }
+                    else
+                    {
+                        diff = card.CheckingBranch.Balance;
+                        card.CreditBranch.Balance += diff;
+                        card.CheckingBranch.Balance = 0;
+                    }
+                }
+            }
+        }
 
-            var cardSrc = await (Context.Cards
+        public async Task Transfer(int sourceCardId, string targetCardNum, decimal amount)
+        {
+            CheckForPositiveAmount(amount);
+
+            var sourceCard = await Context.Cards
                 .Include(c => c.CheckingBranch)
                 .Include(c => c.CreditBranch).DefaultIfEmpty()
-                .Where(c => c.CardId == cardId)
-                .FirstOrDefaultAsync());
+                .Where(c => c.CardId == sourceCardId)
+                .SingleAsync();
 
-            var cardDest = await (Context.Cards
-                    .Include(c => c.CheckingBranch))
+            var cardDest = await Context.Cards
+                .Include(c => c.CheckingBranch)
+                .Include(c => c.CreditBranch).DefaultIfEmpty()
                 .Where(c => c.Number == targetCardNum)
-                .FirstOrDefaultAsync();
+                .SingleAsync();
 
-            if (cardSrc.Number == cardDest.Number)
+            if (sourceCard.Number == targetCardNum)
             {
-                throw new ArgumentOutOfRangeException(nameof(targetCardNum), "You can't to transfer to the same card");
+                throw new InvalidOperationException("You can't transfer to the same card");
             }
 
-            cardSrc.CheckingBranch.Balance -= amount;
-            cardDest.CheckingBranch.Balance += amount;
+            if (sourceCard.CheckingBranch.Balance >= amount)
+            {
+                sourceCard.CheckingBranch.Balance -= amount;
+                cardDest.CheckingBranch.Balance += amount;
+            }
+            else
+            {
+                if (sourceCard.CreditBranch == null ||
+                    sourceCard.CreditBranch.Balance + sourceCard.CreditBranch.Balance < amount)
+                {
+                    throw new InvalidOperationException("Not enough money");
+                }
 
-            // CorrectBalance(cardSrc);
-            //
-            // UpdateCredit(cardSrc);
-            // UpdateCredit(cardDest);
+                var diff = amount - sourceCard.CheckingBranch.Balance;
 
+                sourceCard.CheckingBranch.Balance = 0;
+                sourceCard.CreditBranch.Balance -= diff;
+                await TopUp(cardDest.CardId, amount);
+            }
+
+            CheckCredit(cardDest);
             await Context.SaveChangesAsync();
         }
 
-        private static void PositiveAmount(decimal amount)
+        private static void CheckForPositiveAmount(decimal amount)
         {
             if (amount <= 0)
             {
