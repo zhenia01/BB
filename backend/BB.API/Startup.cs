@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using AutoMapper;
 using BB.API.HostedServices;
+using BB.API.Middlewares;
 using BB.BLL.Interfaces;
 using BB.BLL.MappingProfiles;
 using BB.BLL.Services;
@@ -127,6 +128,8 @@ namespace BB.API
             });
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseRouting();
 
