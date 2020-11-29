@@ -1,4 +1,4 @@
-﻿namespace BB.Common.Dto
+﻿namespace BB.Common.Dto.User
 {
     public record UserDto
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BB.Common.Dto;
+using BB.Common.Dto.User;
 using BB.DAL.Entities;
 
 namespace BB.BLL.MappingProfiles

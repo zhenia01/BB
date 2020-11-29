@@ -1,18 +1,18 @@
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using BC = BCrypt.Net.BCrypt;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using AutoMapper;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
-using BB.Common.Dto;
-using BB.Common.Dto.Card;
 using BB.DAL.Context;
-using BB.DAL.Entities;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using AutoMapper.QueryableExtensions;
+using BC = BCrypt.Net.BCrypt;
+using BB.Common.Dto.Card;
+using BB.DAL.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -26,16 +26,38 @@ namespace BB.BLL.Services
         {
             _configuration = configuration;
         }
+        
+        public async Task<CardDto> GetCardById(int id)
+        {
+            return await Context.Cards.AsNoTracking()
+                .ProjectTo<CardDto>(Mapper.ConfigurationProvider)
+                .SingleAsync(c => c.CardId  == id);
+        }
 
+        public async Task<CardDto> GetCardByNum(string cardNum)
+        {
+            return await Context.Cards.AsNoTracking()
+                .ProjectTo<CardDto>(Mapper.ConfigurationProvider)
+                .SingleAsync(c => c.Number == cardNum);
+        }
+
+        public async Task<ReadOnlyCollection<CardDto>> GetAll()
+        {
+            var cards = await Context.Cards.AsNoTracking()
+                .ToListAsync();
+
+            return Mapper.Map<ReadOnlyCollection<CardDto>>(cards);
+        }
+        
         public async Task<(CardDto card, string token)> Login(CardCredentialsDto cardCredentials)
         {
             (string number, string pin) = cardCredentials;
             
-            Card card = await Context.Cards.SingleOrDefaultAsync(c => c.Number == number);
+            Card card = await Context.Cards.SingleAsync(c => c.Number == number);
 
-            if (card == null || !BC.Verify(pin, card.Pin))
+            if (!BC.Verify(pin, card.Pin))
             {
-                throw new Exception();
+                throw new UnauthorizedAccessException("Wrong pin");
             }
 
             return (Mapper.Map<CardDto>(card), GenerateJwtToken(card.CardId));
@@ -49,7 +71,7 @@ namespace BB.BLL.Services
             {
                 Number = number, Pin = BC.HashPassword(pin),
                 CheckingBranch = new CheckingBranch
-                {
+                {   
                     Balance = 0m
                 },
                 User = await Context.Users.FindAsync(1)
@@ -69,7 +91,7 @@ namespace BB.BLL.Services
             {
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],
-                Subject = new ClaimsIdentity(new[] { new Claim("CardId", cardId.ToString()) }),
+                Subject = new ClaimsIdentity(new[] { new Claim(JwtRegisteredClaimNames.Jti, cardId.ToString()) }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

@@ -8,8 +8,8 @@ namespace BB.DAL.Entities
         public decimal Available { get; set; }
         public decimal Balance { get; set; }
         public double Interest { get; set; }
-        public TimeSpan TimeOver { get; set; }
-        public decimal Debt { get; set; }
+        public DateTime? WithdrawTime { get; set; }
+        public decimal? Debt { get; set; }
         
         public Card Card { get; set; }
     }

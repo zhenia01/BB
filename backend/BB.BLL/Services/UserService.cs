@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
-using BB.Common.Dto;
+using BB.Common.Dto.User;
 using BB.DAL.Context;
-using BB.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BB.BLL.Services
@@ -24,11 +22,11 @@ namespace BB.BLL.Services
             return Mapper.Map<UserDto>(user);
         }
         
-        public async Task<UserDto> GetUserByCardId(int cardId)
+        public async Task<UserDto> GetUserByCardNum(string num)
         {
             var user = (await  Context.Cards.AsNoTracking()
                 .Include(c => c.User)
-                .Where(c => c.CardId == cardId)
+                .Where(c => c.Number == num)
                 .FirstOrDefaultAsync())?.User;
             
             return Mapper.Map<UserDto>(user);
