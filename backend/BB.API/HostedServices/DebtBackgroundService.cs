@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BB.BLL.Services;
+using BB.DAL.Context;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -23,7 +25,8 @@ namespace BB.API.HostedServices
                 {
                     try
                     {
-
+                        await CheckDebt(stoppingToken);
+                        
                         await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
                     }
                     catch (OperationCanceledException) {}
@@ -35,7 +38,9 @@ namespace BB.API.HostedServices
         {
             using var scope = _services.CreateScope();
             
-            // var context = scope.ServiceProvider.GetRequiredService<BBC>()
+            var service = scope.ServiceProvider.GetRequiredService<CreditBranchService>();
+
+            await service.PunishForDebts(stoppingToken);
         }
     }
 }
