@@ -34,10 +34,10 @@ namespace BB.API.Controllers
         public async Task<IActionResult> Withdraw(int cardId, decimal amount)
         {
             if (User.HasClaim(JwtRegisteredClaimNames.Jti, cardId.ToString()))
-            {
+            { 
                 await _branchService.Withdraw(cardId, amount);
+               return Ok();
             }
-            
             return Forbid();
         }
 
