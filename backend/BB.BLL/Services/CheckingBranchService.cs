@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -14,8 +15,11 @@ namespace BB.BLL.Services
 {
     public class CheckingBranchService : BaseService, ICheckingBranchService
     {
-        public CheckingBranchService(BBContext context, IMapper mapper) : base(context, mapper)
+        private readonly ICreditBranchService _creditBranchService;
+        
+        public CheckingBranchService(ICreditBranchService creditBranchService, BBContext context, IMapper mapper) : base(context, mapper)
         {
+            _creditBranchService = creditBranchService;
         }
 
         public async Task<BalanceDto> CheckBalance(int cardId)
@@ -47,10 +51,10 @@ namespace BB.BLL.Services
             {
                 var diff = amount - card.CheckingBranch.Balance;
 
-                if (card.CheckingBranch.Balance >= diff)
+                if (card.CreditBranch.Balance >= diff)
                 {
                     card.CheckingBranch.Balance = 0;
-                    card.CheckingBranch.Balance -= diff;
+                    card.CreditBranch.Balance -= diff;
                 }
                 else
                 {
