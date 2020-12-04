@@ -104,12 +104,6 @@ namespace BB.DAL.Migrations
                         .HasPrecision(9, 2)
                         .HasColumnType("decimal(9,2)");
 
-                    b.Property<double>("Interest")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime?>("WithdrawTime")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("CreditBranchId");
 
                     b.ToTable("CreditBranches");
@@ -125,13 +119,9 @@ namespace BB.DAL.Migrations
                     b.Property<bool>("CanBeTerminated")
                         .HasColumnType("bit");
 
-                    b.Property<string>("CurrencyOfDeposit")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int>("DepSum")
-                        .HasColumnType("int");
+                    b.Property<decimal>("DepSum")
+                        .HasPrecision(9, 2)
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<int>("DepositBranchId")
                         .HasColumnType("int");
