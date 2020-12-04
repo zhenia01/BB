@@ -74,11 +74,14 @@ namespace BB.API
                 opts => opts.MigrationsAssembly(typeof(BBContext).Assembly.GetName().Name)));
 
             services.AddAutoMapper(typeof(UserProfile).Assembly);
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ICardService, CardService>();
-            services.AddScoped<ICheckingBranchService, CheckingBranchService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ICardService, CardService>();
+            services.AddTransient<ICheckingBranchService, CheckingBranchService>();
+            services.AddTransient<ICreditBranchService, CreditBranchService>();
+            services.AddTransient<IDepositBranchService, DepositBranchService>();
 
             services.AddHostedService<DebtBackgroundService>();
+            services.AddHostedService<DepositBackgroundService>();
             
             services.AddCors(options =>
             {
