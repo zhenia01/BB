@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BB.BLL.Interfaces;
 using BB.BLL.Services;
 using BB.DAL.Context;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,28 +20,25 @@ namespace BB.API.HostedServices
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.Run(async () =>
+            while (!stoppingToken.IsCancellationRequested)
             {
-                while (!stoppingToken.IsCancellationRequested)
+                try
                 {
-                    try
-                    {
-                        await CheckDebt(stoppingToken);
-                        
-                        await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
-                    }
-                    catch (OperationCanceledException) {}
+                    await CheckDebt(stoppingToken);
+                    
+                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
                 }
-            }, stoppingToken);
+                catch (OperationCanceledException) {}
+            }
         }
 
         private async Task CheckDebt(CancellationToken stoppingToken)
         {
             using var scope = _services.CreateScope();
             
-            var service = scope.ServiceProvider.GetRequiredService<CreditBranchService>();
+            var service = scope.ServiceProvider.GetRequiredService<ICreditBranchService>();
 
-            await service.PunishForDebts(stoppingToken);
+            await service.PunishForDebts(DateTime.Now, stoppingToken);
         }
     }
 }
