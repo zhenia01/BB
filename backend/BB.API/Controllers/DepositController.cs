@@ -19,7 +19,7 @@ namespace BB.API.Controllers
             _depositService = depositBranchService;
         }
         
-        [HttpPost("deposit")]
+        [HttpPost]
         public async Task Deposit(DepositDto dep)
         {
             await _depositService.Deposit(dep);
