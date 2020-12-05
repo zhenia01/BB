@@ -6,6 +6,6 @@ namespace BB.BLL.Interfaces
 {
     public interface ICreditBranchService
     {
-        Task PunishForDebts(DateTime currDate, CancellationToken stoppingToken);
+        Task PunishForDebts(CancellationToken stoppingToken);
     }
 }

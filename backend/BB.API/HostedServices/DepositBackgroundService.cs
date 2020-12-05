@@ -40,7 +40,7 @@ namespace BB.API.HostedServices
 
             var service = scope.ServiceProvider.GetRequiredService<IDepositBranchService>();
 
-            await service.RewardDepositors(DateTime.Now, stoppingToken);
+            await service.RewardDepositors(stoppingToken);
         }
     }
 }

@@ -9,6 +9,6 @@ namespace BB.BLL.Interfaces
     {
         Task Deposit(DepositDto deposit);
 
-        Task RewardDepositors(DateTime currDate, CancellationToken stoppingToken);
+        Task RewardDepositors(CancellationToken stoppingToken);
     }
 }

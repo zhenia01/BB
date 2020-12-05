@@ -38,7 +38,7 @@ namespace BB.API.HostedServices
             
             var service = scope.ServiceProvider.GetRequiredService<ICreditBranchService>();
 
-            await service.PunishForDebts(DateTime.Now, stoppingToken);
+            await service.PunishForDebts(stoppingToken);
         }
     }
 }
