@@ -57,5 +57,14 @@ namespace BB.API.Controllers
             
             return Forbid();
         }
+
+        [HttpPost("mobile-topup")]
+        public async Task MobileTopUp(int cardId, decimal amount)
+        {
+            await Withdraw(cardId, amount);
+        }
+
+        
+
     }
 }
