@@ -15,8 +15,6 @@ namespace BB.BLL.Services
 {
     public class DepositBranchService : BaseService, IDepositBranchService
     {
-        public static TimeSpan DepositTimeLapse = new TimeSpan(0, 0, 5);
-
         private readonly ICheckingBranchService _checkingBranchService;
 
         public DepositBranchService(ICheckingBranchService checkingBranchService, BBContext context, IMapper mapper) : base(context, mapper)
@@ -46,37 +44,32 @@ namespace BB.BLL.Services
 
             var dep = Mapper.Map<Deposit>(deposit);
 
-            switch (dep.Term)
+            dep.Percent = dep.Term switch
             {
-                case 1 :
-                case 2 :
-                    dep.Percent = 8.0;
-                    break;
-                case 3 :
-                case 4 :
-                case 5 :
-                    dep.Percent = 9.0;
-                    break;
-                case 6 :
-                case 7 :
-                case 8 :
-                    dep.Percent = 10.0;
-                    break;
-                case 9 :
-                case 10 :
-                case 11 :
-                    dep.Percent = 10.5;
-                    break;
-                case 12 :
-                    dep.Percent = 11.0;
-                    break;
-            }
+                1 => 8.0,
+                2 => 8.0,
+                
+                3 => 9.0,
+                4 => 9.0,
+                5 => 9.0,
+                
+                6 => 10.0,
+                7 => 10.0,
+                8 => 10.0,
+                
+                9 => 10.5,
+                10 => 10.5,
+                11 => 10.5,
+                
+                12 => 11.0,
+                _ => dep.Percent
+            };
 
             await Context.AddAsync(dep);
             await Context.SaveChangesAsync();
         }
 
-        public async Task RewardDepositors(DateTime currDate, CancellationToken stoppingToken)
+        public async Task RewardDepositors(CancellationToken stoppingToken)
         {
             var cards = await Context.Cards
                 .Include(d => d.DepositBranch)

@@ -15,11 +15,8 @@ namespace BB.BLL.Services
 {
     public class CheckingBranchService : BaseService, ICheckingBranchService
     {
-        private readonly ICreditBranchService _creditBranchService;
-        
-        public CheckingBranchService(ICreditBranchService creditBranchService, BBContext context, IMapper mapper) : base(context, mapper)
+        public CheckingBranchService(BBContext context, IMapper mapper) : base(context, mapper)
         {
-            _creditBranchService = creditBranchService;
         }
 
         public async Task<BalanceDto> CheckBalance(int cardId)

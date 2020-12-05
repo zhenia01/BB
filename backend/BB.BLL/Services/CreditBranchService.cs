@@ -13,13 +13,12 @@ namespace BB.BLL.Services
     public class CreditBranchService : BaseService, ICreditBranchService
     {
         public static decimal CreditPercent { get; } = 2.5m;
-        public static TimeSpan CreditTimeLapse = new TimeSpan(0, 0, 5);
 
         public CreditBranchService(BBContext context, IMapper mapper) : base(context, mapper)
         {
         }
         
-        public async Task PunishForDebts(DateTime currDate, CancellationToken stoppingToken)
+        public async Task PunishForDebts(CancellationToken stoppingToken)
         {
             var creditBranches = await Context.CreditBranches
                 .Where(c => c.Balance < c.Available)
@@ -32,10 +31,7 @@ namespace BB.BLL.Services
             }
 
             await Context.SaveChangesAsync(stoppingToken);
-
-            // TODO punishments
-            // var debtors = Context.CreditBranches
-            //     .Where(cb => cb.Balance < cb.Available && cb.WithdrawTime.HasValue && (cb.WithdrawTime.Value - DateTime.Now).Seconds )
+            
         }
     }
 }
