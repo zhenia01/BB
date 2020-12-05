@@ -34,10 +34,10 @@ namespace BB.API.Controllers
         public async Task<IActionResult> Withdraw(int cardId, decimal amount)
         {
             if (User.HasClaim(JwtRegisteredClaimNames.Jti, cardId.ToString()))
-            {
+            { 
                 await _branchService.Withdraw(cardId, amount);
+               return Ok();
             }
-            
             return Forbid();
         }
 
@@ -57,5 +57,14 @@ namespace BB.API.Controllers
             
             return Forbid();
         }
+
+        [HttpPost("mobile-topup")]
+        public async Task MobileTopUp(int cardId, decimal amount)
+        {
+            await Withdraw(cardId, amount);
+        }
+
+        
+
     }
 }

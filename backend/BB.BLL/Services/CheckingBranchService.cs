@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -47,10 +48,10 @@ namespace BB.BLL.Services
             {
                 var diff = amount - card.CheckingBranch.Balance;
 
-                if (card.CheckingBranch.Balance >= diff)
+                if (card.CreditBranch.Balance >= diff)
                 {
                     card.CheckingBranch.Balance = 0;
-                    card.CheckingBranch.Balance -= diff;
+                    card.CreditBranch.Balance -= diff;
                 }
                 else
                 {

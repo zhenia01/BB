@@ -8,7 +8,8 @@ namespace BB.DAL.Context.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Deposit> model)
         {
-            model.Property(d => d.CurrencyOfDeposit).IsRequired().HasMaxLength(10);
+            model.Property(cb => cb.DepSum).HasPrecision(9, 2);
         }
+    
     }
 }
