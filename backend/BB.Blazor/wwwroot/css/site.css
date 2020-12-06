@@ -9,6 +9,15 @@ html, body {
     padding: 0;
 }
 
+p.text {
+    font-size: 1.5rem;
+    color: lime;
+}
+
+p.error {
+    color: red;
+}
+
 a, .btn-link {
     color: #0366d6;
 }

@@ -2,10 +2,14 @@
 @page "/main"
 @using Microsoft.IdentityModel.JsonWebTokens
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject NavigationManager NavigationManager
+@inject ProtectedSessionStorage ProtectedSessionStorage
 @attribute [Authorize]
 
 <h3 style="color: white;">@CardId</h3>
+
+<MainButtons Callback1="@Exit" Text1="Exit" Text2="Deposit"></MainButtons>
 
 @code {
 
@@ -14,6 +18,11 @@
 
     [Parameter]
     public int? CardId { get; set; }
+
+    public async Task Exit()
+    {
+        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/"));
+    }
 
     protected override async Task OnInitializedAsync()
     {
