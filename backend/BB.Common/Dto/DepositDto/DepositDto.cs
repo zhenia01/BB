@@ -6,6 +6,6 @@ namespace BB.Common.Dto.DepositDto
         public int Term { get; init; }
         public bool PaymentsToDeposit { get; init; }
         public bool CanBeTerminated { get; init; }
-        public int DepositBranchId { get; init; }
+        public int CardId { get; init; }
     }
 }
