@@ -1,4 +1,5 @@
 using System;
+using System.Formats.Asn1;
 using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using BB.BLL.Interfaces;
 using BB.BLL.MappingProfiles;
 using BB.BLL.Services;
 using BB.DAL.Context;
+using BB.DAL.Entities;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -110,6 +112,7 @@ namespace BB.Blazor
             });
             
             InitializeDatabase(app);
+            
         }
         
         private void InitializeDatabase(IApplicationBuilder app)
@@ -121,5 +124,6 @@ namespace BB.Blazor
                 context.Database.Migrate();
             }
         }
+        
     }
 }

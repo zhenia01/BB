@@ -10,6 +10,8 @@ namespace BB.Common.Dto.Card
         
         [RegularExpression("(?=)")]
         public string Pin { get; set; }
+        
+        public int UserId { get; set; }
 
         public void Deconstruct(out string number, out string pin)
         {
