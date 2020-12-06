@@ -24,5 +24,17 @@ namespace BB.API.Controllers
         {
             await _depositService.Deposit(dep);
         }
+
+        [HttpPost("createDepositAccount")]
+        public async Task CreateDepositAccount(int cardId)
+        {
+            await _depositService.CreateDepositAccount(cardId);
+        }
+        
+        [HttpPost("deleteDepositAccount")]
+        public async Task DeleteDepositAccount(int cardId)
+        {
+            await _depositService.DeleteDepositAccount(cardId);
+        }
     }
 }

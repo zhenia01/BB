@@ -9,6 +9,9 @@ namespace BB.BLL.Interfaces
     {
         Task Deposit(DepositDto deposit);
 
+        Task CreateDepositAccount(int cardId);
+        Task DeleteDepositAccount(int cardId);
+
         Task RewardDepositors(CancellationToken stoppingToken);
     }
 }
