@@ -6,7 +6,6 @@ using AutoMapper;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
 using BB.Common.Dto.DepositDto;
-using BB.Common.Dto.User;
 using BB.DAL.Context;
 using BB.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +20,53 @@ namespace BB.BLL.Services
         {
             _checkingBranchService = checkingBranchService;
         }
-        
+
+        public async Task CreateDepositAccount(int cardId)
+        {
+            var card = Context.Cards
+                .Include(c => c.DepositBranch).DefaultIfEmpty()    
+                .Where(c => c.CardId == cardId)
+                .SingleAsync();
+
+            if (card.Result.DepositBranchId.HasValue)
+            {
+                throw new InvalidOperationException("You already have deposit account");
+            }
+
+            var depositBranch = new DepositBranch();
+            await Context.AddAsync(depositBranch);
+
+            card.Result.DepositBranch = depositBranch;
+            
+            await Context.SaveChangesAsync();
+        }
+
+        public async Task DeleteDepositAccount(int cardId)
+        {
+            var depositCard = await Context.DepositBranches
+                .Include(c => c.Card)
+                .Where(c => c.Card.CardId == cardId)
+                .SingleAsync();
+
+            
+            if (depositCard.Deposits != null)
+            {
+                throw new InvalidOperationException("You have unpaid deposit");
+            }
+
+            /*
+            foreach (var deposit in depositCard.Deposits)
+            {
+                Context.Remove(deposit);
+            }
+            */
+
+            Context.Remove(depositCard);
+
+            await Context.SaveChangesAsync();
+            // чи точно нам потрібно видаляти його 
+        }
+
         public async Task Deposit(DepositDto deposit)
         {
             if (deposit.DepSum <= 0)
@@ -29,20 +74,27 @@ namespace BB.BLL.Services
                 throw new ArgumentOutOfRangeException(nameof(deposit.DepSum), "Amount should be positive");
             }
             
-            var card = await Context.Cards
-                .Include(c => c.DepositBranch)
-                .Include(c => c.CheckingBranch)
-                .Where(c=> c.DepositBranchId == deposit.DepositBranchId)
+            var card = await Context.DepositBranches
+                .Include(c => c.Card)
+                .Include(c => c.Card.CheckingBranch)
+                .Where(c=> c.Card.CardId == deposit.CardId)
                 .SingleAsync();
 
-            if (card.CheckingBranch.Balance < deposit.DepSum)
+            if (!card.Card.DepositBranchId.HasValue)
+            {
+                throw new InvalidOperationException("First you need to create Deposit account");
+            }
+
+            if (card.Card.CheckingBranch.Balance < deposit.DepSum)
             {
                 throw new InvalidOperationException("Not enough money");
             }
 
-            card.CheckingBranch.Balance -= deposit.DepSum;
+            card.Card.CheckingBranch.Balance -= deposit.DepSum;
 
             var dep = Mapper.Map<Deposit>(deposit);
+
+            dep.DepositBranchId = card.DepositBranchId;
 
             dep.Percent = dep.Term switch
             {
@@ -64,7 +116,8 @@ namespace BB.BLL.Services
                 12 => 11.0,
                 _ => dep.Percent
             };
-
+            
+            
             await Context.AddAsync(dep);
             await Context.SaveChangesAsync();
         }
@@ -120,7 +173,6 @@ namespace BB.BLL.Services
                     deposit.Term -= 1;
                 }
             }
-
             await Context.SaveChangesAsync(stoppingToken);
         }
     }
