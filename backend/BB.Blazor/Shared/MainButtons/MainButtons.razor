@@ -1,0 +1,62 @@
+<div class="buttons">
+    <div class="control 1">
+        <button class="button" @onclick="Callback1"></button>
+        <p class="name">@Text1</p>
+    </div>
+    <div class="control 2">
+        <button class="button" @onclick="Callback2"></button>
+        <p class="name">@Text2</p>
+    </div>
+    <div class="control 3 ">
+        <button class="button" @onclick="Callback3"></button>
+        <p class="name">@Text3</p>
+    </div>
+    <div class="control 4">
+        <button class="button" @onclick="Callback4"></button>
+        <p class="name">@Text4</p>
+    </div>
+    <div class="control 5">
+        <button class="button" @onclick="Callback5"></button>
+        <p class="name">@Text5</p>
+    </div>
+    <div class="control 6">
+        <button class="button" @onclick="Callback6"></button>
+        <p class="name">@Text6</p>
+    </div>
+    <div class="control 7">
+        <button class="button" @onclick="Callback7"></button>
+        <p class="name">@Text7</p>
+    </div>
+    <div class="control 8">
+        <button class="button" @onclick="Callback8"></button>
+        <p class="name">@Text8</p>
+    </div>
+</div>
+
+@code {
+    
+    [Parameter] public string Text1 { get; set; }
+    [Parameter] public EventCallback Callback1 { get; set; }
+    
+    [Parameter] public string Text2 { get; set; }
+    [Parameter] public EventCallback Callback2 { get; set; }
+    
+    [Parameter] public string Text3 { get; set; }
+    [Parameter] public EventCallback Callback3 { get; set; }
+    
+    [Parameter] public string Text4 { get; set; }
+    [Parameter] public EventCallback Callback4 { get; set; }
+    
+    [Parameter] public string Text5 { get; set; }
+    [Parameter] public EventCallback Callback5 { get; set; }
+    
+    [Parameter] public string Text6 { get; set; }
+    [Parameter] public EventCallback Callback6 { get; set; }
+    
+    [Parameter] public string Text7 { get; set; }
+    [Parameter] public EventCallback Callback7 { get; set; }
+    
+    [Parameter] public string Text8 { get; set; }
+    [Parameter] public EventCallback Callback8 { get; set; }
+    
+}

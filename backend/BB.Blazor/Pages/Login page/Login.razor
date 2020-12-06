@@ -1,0 +1,75 @@
+﻿@page "/"
+@using BB.BLL.Interfaces
+@using BB.Common.Dto.Card
+@using Blazored.LocalStorage
+@using System.Security.Principal
+@inject NavigationManager NavigationManager
+
+@inject ICardService CardService
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Security.Claims
+@using Microsoft.IdentityModel.JsonWebTokens
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<div class="root">
+    <p class="error text">@_error</p>
+
+    <div class="login-wrapper">
+        <img src="card.webp" class="card"/>
+    </div>
+
+    <EditForm OnSubmit="@(OnLogin)" Model="@_credentials" class="card-form">
+        <DataAnnotationsValidator/>
+        <InputTextOnInput type="text" maxlength="4" @bind-Value="@_credentials.Number" class="card-number"/>
+
+        <label class="card-pin">
+            PIN:
+            <InputText type="password" maxlength="4" @bind-Value="@_credentials.Pin"/>
+        </label>
+
+        <button type="submit" class="submit-button"></button>
+    </EditForm>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private CardCredentialsDto _credentials = new()
+    {
+        Number = "",
+        Pin = ""
+    };
+
+    private string _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateTask).User;
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo($"/main/{user.FindFirstValue(JwtRegisteredClaimNames.Jti)}");
+        }
+    }
+
+    private async Task OnLogin()
+    {
+        try
+        {
+            var (card, token) = await CardService.Login(_credentials);
+            await ProtectedSessionStore.SetAsync("authToken", token);
+            await Task.Run(() => NavigationManager.NavigateTo($"/main/{card.CardId}"));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            _error = "Wrong pin";
+        }
+        catch (InvalidOperationException)
+        {
+            _error = "Wrong number";
+        }
+    // await Task.Run(StateHasChanged);
+    }
+
+}
