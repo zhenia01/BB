@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BB.Common", "BB.Common\BB.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BB.DAL", "BB.DAL\BB.DAL.csproj", "{7CC266EF-EBA5-468E-9130-54FEF39349EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BB.Blazor", "BB.Blazor\BB.Blazor.csproj", "{BD9D80DD-07E4-4868-825F-B37CD056691F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{7CC266EF-EBA5-468E-9130-54FEF39349EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CC266EF-EBA5-468E-9130-54FEF39349EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CC266EF-EBA5-468E-9130-54FEF39349EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD9D80DD-07E4-4868-825F-B37CD056691F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD9D80DD-07E4-4868-825F-B37CD056691F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD9D80DD-07E4-4868-825F-B37CD056691F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD9D80DD-07E4-4868-825F-B37CD056691F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -27,7 +27,8 @@ namespace BB.BLL.Services
             foreach (var card in creditBranches)
             {
                 var diff = card.Available - card.Balance;
-                card.Debt += decimal.Multiply(Math.Abs(diff), CreditPercent) / 100;
+                var debt = diff * CreditPercent / 100;
+                card.Debt = card.Debt == null ? debt : card.Debt + debt;
             }
 
             await Context.SaveChangesAsync(stoppingToken);

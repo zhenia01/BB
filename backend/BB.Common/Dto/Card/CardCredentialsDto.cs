@@ -1,9 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BB.Common.Dto.Card
 {
-    public record CardCredentialsDto
+    public class CardCredentialsDto
     {
-        public string Number { get; init; }
-        public string Pin { get; init; }
+        [StringLength(4, MinimumLength = 4)]
+        [RegularExpression("\\d*")]
+        public string Number { get; set; }
+        
+        [RegularExpression("(?=)")]
+        public string Pin { get; set; }
 
         public void Deconstruct(out string number, out string pin)
         {

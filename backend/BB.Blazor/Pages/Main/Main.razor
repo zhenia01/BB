@@ -1,0 +1,34 @@
+@page "/main/{CardId:int}"
+@page "/main"
+@using Microsoft.IdentityModel.JsonWebTokens
+@using System.Security.Claims
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<h3 style="color: white;">@CardId</h3>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public int? CardId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!CardId.HasValue)
+        {
+            var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+            if (jtiValue != null)
+            {
+                CardId = int.Parse(jtiValue);
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+
+}

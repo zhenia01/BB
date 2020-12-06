@@ -1,0 +1,13 @@
+@using BB.Blazor.Shared
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p style="color: #00FF41; font-size: 5rem; width: 100%; text-align: center; padding-top: 10%">Sorry, there's nothing here</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

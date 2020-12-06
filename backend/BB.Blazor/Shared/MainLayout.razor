@@ -1,0 +1,25 @@
+﻿@using System.Security.Principal
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<div class="machine">
+    <div class="screen">
+        @Body
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        IIdentity userIdentity = (await AuthenticationStateTask).User.Identity;
+        if (userIdentity == null || !userIdentity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+}
