@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BB.BLL.Interfaces;
 using BB.BLL.Services.Abstract;
+using BB.Common.Dto.DepositDto;
 using BB.DAL.Context;
 using BB.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,27 @@ namespace BB.BLL.Services
 
         public CreditBranchService(BBContext context, IMapper mapper) : base(context, mapper)
         {
+        }
+
+
+        public async Task<CreditBalanceDto> CheckCreditBalance(int cardId)
+        {
+            var card = await Context.Cards
+                .Include(c => c.CreditBranch).DefaultIfEmpty()
+                .Where(c => c.CardId == cardId)
+                .SingleAsync();
+
+            return Mapper.Map<CreditBalanceDto>(card);
+        }
+
+        public async Task<bool> CheckExists(int cardId)
+        {
+            var card = await Context.Cards
+                .Include(c => c.CreditBranch).DefaultIfEmpty()
+                .Where(c => c.CardId == cardId)
+                .SingleAsync();
+
+            return card.CreditBranchId.HasValue;
         }
 
         public async Task CreateCreditAccount(int cardId)
