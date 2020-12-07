@@ -28,9 +28,9 @@ namespace BB.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<CardDto> Login([FromBody] CardCredentialsDto cardCredentials)
+        public async Task<CardDto> Login([FromBody] CardLoginDto cardLogin)
         {
-            var (card, token) = await _cardService.Login(cardCredentials);
+            var (card, token) = await _cardService.Login(cardLogin);
             Response.Headers["access-token"] = token;
             return card;
         }
