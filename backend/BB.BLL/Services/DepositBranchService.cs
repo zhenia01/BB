@@ -21,6 +21,16 @@ namespace BB.BLL.Services
             _checkingBranchService = checkingBranchService;
         }
 
+        public async Task<bool> CheckExists(int cardId)
+        {
+            var card = await Context.Cards
+                .Include(c => c.DepositBranch).DefaultIfEmpty()
+                .Where(c => c.CardId == cardId)
+                .SingleAsync();
+
+            return card.DepositBranchId.HasValue;
+        }
+        
         public async Task CreateDepositAccount(int cardId)
         {
             var card = Context.Cards

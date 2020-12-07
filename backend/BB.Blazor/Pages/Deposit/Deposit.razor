@@ -1,9 +1,9 @@
-@page "/createCreditBranch"
+@page "/createDepositBranch"
 @using BB.BLL.Interfaces
 @inject NavigationManager NavigationManager
 
 @inject ICardService CardService
-@inject ICreditBranchService CreditBranchService
+@inject IDepositBranchService DepositBranchService
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using System.Security.Claims
 @using Microsoft.IdentityModel.JsonWebTokens
@@ -12,7 +12,7 @@
 
 <MainButtons
     Text7="Back" Callback7="GoBack"
-    Text8="Create Acc" Callback8="CreateAcc">
+    Text8="Create Deposit Account" Callback8="CreateAcc">
 </MainButtons>
 
 
@@ -29,13 +29,13 @@
     }
 
     private async Task CreateAcc(){
-        if (! await CreditBranchService.CheckExists(_cardId))
+        if (! await DepositBranchService.CheckExists(_cardId))
         {
             try
             {
-                await CreditBranchService.CreateCreditAccount(_cardId);
+                await DepositBranchService.CreateDepositAccount(_cardId);
             }
-            catch (InvalidOperationException)
+            catch (ArgumentOutOfRangeException)
             {
             
             }

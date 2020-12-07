@@ -20,6 +20,16 @@ namespace BB.BLL.Services
         public CreditBranchService(BBContext context, IMapper mapper) : base(context, mapper)
         {
         }
+        
+        public async Task<bool> CheckExists(int cardId)
+        {
+            var card = await Context.Cards
+                .Include(c => c.CreditBranch).DefaultIfEmpty()
+                .Where(c => c.CardId == cardId)
+                .SingleAsync();
+
+            return card.CreditBranchId.HasValue;
+        }
 
 
         public async Task<CreditBalanceDto> CheckCreditBalance(int cardId)
@@ -32,16 +42,6 @@ namespace BB.BLL.Services
             return Mapper.Map<CreditBalanceDto>(card);
         }
 
-        public async Task<bool> CheckExists(int cardId)
-        {
-            var card = await Context.Cards
-                .Include(c => c.CreditBranch).DefaultIfEmpty()
-                .Where(c => c.CardId == cardId)
-                .SingleAsync();
-
-            return card.CreditBranchId.HasValue;
-        }
-
         public async Task CreateCreditAccount(int cardId)
         {
             var card = await Context.Cards
@@ -49,7 +49,7 @@ namespace BB.BLL.Services
                 .Where(c => c.CardId == cardId)
                 .SingleAsync();
 
-            if (card.DepositBranchId.HasValue)
+            if (card.CreditBranchId.HasValue)
             {
                 throw new InvalidOperationException("You already have credit account");
             }
