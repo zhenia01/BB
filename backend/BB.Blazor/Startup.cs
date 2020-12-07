@@ -112,7 +112,6 @@ namespace BB.Blazor
             });
             
             InitializeDatabase(app);
-            
         }
         
         private void InitializeDatabase(IApplicationBuilder app)
@@ -124,6 +123,5 @@ namespace BB.Blazor
                 context.Database.Migrate();
             }
         }
-        
     }
 }
