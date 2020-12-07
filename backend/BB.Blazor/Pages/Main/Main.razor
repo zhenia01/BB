@@ -16,20 +16,21 @@
 <div class="root" style="color: green">
     <p>Balance: @CheckingBalance</p>
     @if (CreditBalance.HasValue)
-        {
-            <p>Credit Balance: @BalanceDto.CreditBalance</p>
-        }
+    {
+        <p>Credit Balance: @BalanceDto.CreditBalance</p>
+    }
 </div>
 
 <h3 style="color: white;">@CardId</h3>
 
-<MainButtons Callback1="@Exit" Text1="Withdraw"></MainButtons>
-<MainButtons Callback2="@Exit" Text2="Transfer"></MainButtons>
-<MainButtons Callback3="@Exit" Text3="TopUp"></MainButtons>
-<MainButtons Callback4="@Exit" Text4="Mobile TopUp"></MainButtons>
-<MainButtons Callback5="@Exit" Text5="Create Credit Account"></MainButtons>
-<MainButtons Callback6="@CreateDepositAccount" Text6="CreateDepositAccount"></MainButtons>
-<MainButtons Callback7="@Exit" Text7="Exit"></MainButtons>
+<MainButtons Callback1="@Exit" Text1="Withdraw"
+             Callback2="@Exit" Text2="Transfer"
+             Callback3="@Topup" Text3="Top Up"
+             Callback4="@Exit" Text4="Mobile Top Up"
+             Callback5="@Exit" Text5="Credit Acc"
+             Callback6="@Exit" Text6="Deposit Acc"
+             Callback7="@Exit" Text7="Exit">
+</MainButtons>
 
 @code {
 
@@ -38,14 +39,14 @@
 
     [Parameter]
     public int? CardId { get; set; }
-    
+
     [Parameter]
     public decimal CheckingBalance { get; set; }
-    
+
     [Parameter]
     public decimal? CreditBalance { get; set; }
 
-    
+
     public BalanceDto BalanceDto { get; set; }
 
 
@@ -53,10 +54,10 @@
     {
         await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/"));
     }
-    
-    public async Task CreateDepositAccount()
+
+    public void Topup()
     {
-        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/"));
+        NavigationManager.NavigateTo("/topup");
     }
 
     protected override async Task OnInitializedAsync()
@@ -83,6 +84,6 @@
         CheckingBalance = BalanceDto.CheckingBalance;
         CreditBalance = BalanceDto.CreditBalance;
     }
-    
+
 
 }
