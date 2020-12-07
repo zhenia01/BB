@@ -1,0 +1,63 @@
+@page "/topup"
+@using System.Security.Claims
+@using BB.BLL.Interfaces
+@using Microsoft.IdentityModel.JsonWebTokens
+
+@inject NavigationManager NavigationManager
+@inject ICheckingBranchService CheckingBranchService
+
+<p class="text">Top up</p>
+<EditForm Model="Value" OnSubmit="DoTopup" style="display: grid">
+    <DataAnnotationsValidator/>
+    <InputNumber min="0.01" @bind-Value="@Value.Value" class="value-input" style="display: inline-block;text-align: center;width: 30%;height: 2rem;font-size: 2rem;justify-self: center;margin-top: 1rem;"/>
+</EditForm>
+@* <input type="number" @bind-value="_value"/> *@
+<MainButtons
+    Text8="Back" Callback8="GoBack"
+    Text7="Clear" Callback7="Clear"
+    Text6="Top up" Callback6="DoTopup">
+</MainButtons>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private int _cardId;
+    public TopupValue Value = new() {Value = 0};
+
+    private async Task DoTopup()
+    {
+        try
+        {
+            await CheckingBranchService.TopUp(_cardId, Value.Value);
+            NavigationManager.NavigateTo("/main");
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            Value.Value = 0;
+        }
+    }
+
+    private void Clear()
+    {
+        Value.Value = 0;
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/main");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        if (cardIdValue == null)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+        _cardId = int.Parse(cardIdValue);
+    }
+
+}
