@@ -1,0 +1,29 @@
+.text {
+    width: 100%;
+    text-align: center;
+}
+
+.text {
+    width: 100%;
+    text-align: center;
+    padding-top: 1rem;
+}
+
+::deep form {
+    display: grid;
+}
+
+.elem {
+    justify-self: center;
+    padding-top: 0;
+    color: #0F0;
+}
+
+::deep .value-input {
+    display: inline-block;
+    text-align: center;
+    width: 30%;
+    height: 2rem;
+    font-size: 2rem;
+    margin-top: 1rem;
+}

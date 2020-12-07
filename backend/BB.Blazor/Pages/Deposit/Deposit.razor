@@ -25,7 +25,7 @@
     
     private void GoBack()
     {
-        NavigationManager.NavigateTo("/main");
+        NavigationManager.NavigateTo("/main", true);
     }
 
     private async Task CreateAcc(){
@@ -39,7 +39,7 @@
             {
             
             }
-            NavigationManager.NavigateTo("/main");
+            NavigationManager.NavigateTo("/main", true);
         }
         else
         {
@@ -52,7 +52,7 @@
         var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
         if (cardIdValue == null)
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/", true);
             return;
         }
         _cardId = int.Parse(cardIdValue);
