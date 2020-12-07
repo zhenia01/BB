@@ -1,12 +1,9 @@
-@page "/main/{CardId:int}"
 @page "/main"
 @using Microsoft.IdentityModel.JsonWebTokens
 @using System.Security.Claims
 @using BB.BLL.Interfaces
 @using BB.Common.Dto.Balance
-@using BB.DAL.Entities
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using Microsoft.AspNetCore.Mvc.Razor.TagHelpers
 @inject NavigationManager NavigationManager
 @inject ProtectedSessionStorage ProtectedSessionStorage
 @attribute [Authorize]
@@ -23,13 +20,14 @@
 
 <h3 style="color: white;">@CardId</h3>
 
-<MainButtons Callback1="@Exit" Text1="Withdraw"></MainButtons>
-<MainButtons Callback2="@Exit" Text2="Transfer"></MainButtons>
-<MainButtons Callback3="@Exit" Text3="TopUp"></MainButtons>
-<MainButtons Callback4="@Exit" Text4="Mobile TopUp"></MainButtons>
-<MainButtons Callback5="@Exit" Text5="Create Credit Account"></MainButtons>
-<MainButtons Callback6="@CreateDepositAccount" Text6="CreateDepositAccount"></MainButtons>
-<MainButtons Callback7="@Exit" Text7="Exit"></MainButtons>
+<MainButtons Callback1="@Withdraw" Text1="Withdraw"
+             Callback2="@Exit" Text2="Transfer"
+             Callback3="@Topup" Text3="Top Up"
+             Callback4="@Exit" Text4="Mobile Top Up"
+             Callback5="@Exit" Text5="Credit Acc"
+             Callback6="@Exit" Text6="Deposit Acc"
+             Callback7="@Exit" Text7="Exit">
+</MainButtons>
 
 @code {
 
@@ -38,41 +36,42 @@
 
     [Parameter]
     public int? CardId { get; set; }
-    
+
     [Parameter]
     public decimal CheckingBalance { get; set; }
-    
+
     [Parameter]
     public decimal? CreditBalance { get; set; }
 
-    
+
     public BalanceDto BalanceDto { get; set; }
 
+    public void Withdraw()
+    {
+        NavigationManager.NavigateTo("/withdraw");
+    }
 
     public async Task Exit()
     {
-        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/"));
+        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/", true));
     }
-    
-    public async Task CreateDepositAccount()
+
+    public void Topup()
     {
-        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/"));
+        NavigationManager.NavigateTo("/topup");
     }
 
     protected override async Task OnInitializedAsync()
     {
-        if (!CardId.HasValue)
-        {
-            var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
             if (jtiValue != null)
             {
                 CardId = int.Parse(jtiValue);
             }
             else
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/", true);
             }
-        }
         await CheckBalance();
     }
 
@@ -83,6 +82,6 @@
         CheckingBalance = BalanceDto.CheckingBalance;
         CreditBalance = BalanceDto.CreditBalance;
     }
-    
+
 
 }
