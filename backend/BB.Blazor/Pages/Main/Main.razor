@@ -12,6 +12,8 @@
 @attribute [Authorize]
 
 @inject ICheckingBranchService CheckingService
+@inject ICreditBranchService CreditBranchService
+
 
 <div class="root" style="color: green">
     <p>Balance: @CheckingBalance</p>
@@ -27,7 +29,7 @@
              Callback2="@Exit" Text2="Transfer"
              Callback3="@Topup" Text3="Top Up"
              Callback4="@MobileTopUp" Text4="Mobile Top Up"
-             Callback5="@Exit" Text5="Credit Acc"
+             Callback5="@CreateCredit" Text5="Credit Acc"
              Callback6="@Exit" Text6="Deposit Acc"
              Callback7="@Exit" Text7="Exit">
 </MainButtons>
@@ -64,6 +66,19 @@
     {
         NavigationManager.NavigateTo("/mobile-topup");
     }
+
+    public async Task CreateCredit()
+    {
+        if(await CreditBranchService.CheckExists(CardId ?? 0)){
+        
+            NavigationManager.NavigateTo("/creditCheck");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/createCreditBranch");
+        }
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         if (!CardId.HasValue)
@@ -88,6 +103,4 @@
         CheckingBalance = BalanceDto.CheckingBalance;
         CreditBalance = BalanceDto.CreditBalance;
     }
-
-
 }

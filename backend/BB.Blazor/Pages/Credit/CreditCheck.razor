@@ -1,0 +1,83 @@
+@page "/creditCheck"
+@using BB.BLL.Interfaces
+@inject NavigationManager NavigationManager
+
+@inject ICardService CardService
+@inject ICreditBranchService CreditBranchService
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Security.Claims
+@using BB.BLL.Services
+@using BB.Common.Dto.DepositDto
+@using BB.DAL.Entities
+@using Microsoft.IdentityModel.JsonWebTokens
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+
+<div class="credit" style="color: green">
+
+    <p>Credit Limit: @Available </p>
+    <p>Credit Balance: @Balance </p>
+    @if (Debt.HasValue)
+    {
+        <p>Credit Debt: @Debt </p>
+    }
+        
+
+</div>
+    
+
+<MainButtons
+    Text7="Back" Callback7="GoBack"
+    Text8="Delete Credit Account" Callback8="Delete">
+</MainButtons>
+
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private int _cardId;
+
+    public CreditBalanceDto BalanceDto { get; set; }
+    
+    public decimal Available { get; set; }
+    public decimal Balance { get; set; }
+    public decimal? Debt { get; set; }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/main");
+    }
+    
+    private async Task Delete()
+    {
+        await CreditBranchService.DeleteCreditAccount(_cardId);
+        
+        NavigationManager.NavigateTo("/main");
+    }
+
+    private async Task CheckCredit()
+    {
+        BalanceDto = await CreditBranchService.CheckCreditBalance(_cardId);
+
+        Available = BalanceDto.Available;
+        Balance = BalanceDto.Balance;
+        Debt = BalanceDto.Debt;
+    }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        if (cardIdValue == null)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+        _cardId = int.Parse(cardIdValue);
+
+        await CheckCredit();
+    }
+    
+}
