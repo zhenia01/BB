@@ -49,7 +49,7 @@
         var user = (await AuthenticationStateTask).User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            NavigationManager.NavigateTo($"/main/{user.FindFirstValue(JwtRegisteredClaimNames.Jti)}");
+            NavigationManager.NavigateTo("/main", true);
         }
     }
 
@@ -57,9 +57,9 @@
     {
         try
         {
-            var (card, token) = await CardService.Login(_cardLogin);
+            var (_, token) = await CardService.Login(_cardLogin);
             await ProtectedSessionStore.SetAsync("authToken", token);
-            await Task.Run(() => NavigationManager.NavigateTo($"/main/{card.CardId}"));
+            await Task.Run(() => NavigationManager.NavigateTo("/main", true));
         }
         catch (UnauthorizedAccessException)
         {

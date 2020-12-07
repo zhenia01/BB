@@ -18,8 +18,6 @@
         }
 </div>
 
-<h3 style="color: white;">@CardId</h3>
-
 <MainButtons Callback1="@Withdraw" Text1="Withdraw"
              Callback2="@Exit" Text2="Transfer"
              Callback3="@Topup" Text3="Top Up"
@@ -48,7 +46,7 @@
 
     public void Withdraw()
     {
-        NavigationManager.NavigateTo("/withdraw");
+        NavigationManager.NavigateTo("/withdraw", true);
     }
 
     public async Task Exit()
@@ -58,12 +56,12 @@
 
     public void Topup()
     {
-        NavigationManager.NavigateTo("/topup");
+        NavigationManager.NavigateTo("/topup", true);
     }
 
     public void MobileTopUp()
     {
-        NavigationManager.NavigateTo("/mobile-topup");
+        NavigationManager.NavigateTo("/mobile-topup", true);
     }
     protected override async Task OnInitializedAsync()
     {

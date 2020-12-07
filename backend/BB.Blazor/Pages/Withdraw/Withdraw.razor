@@ -31,7 +31,7 @@
         try
         {
             await CheckingBranchService.Withdraw(_cardId, Value.Value);
-            NavigationManager.NavigateTo("/main");
+            NavigationManager.NavigateTo("/main", true);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -51,7 +51,7 @@
 
     private void GoBack()
     {
-        NavigationManager.NavigateTo("/main");
+        NavigationManager.NavigateTo("/main", true);
     }
 
     protected override async Task OnInitializedAsync()
@@ -59,7 +59,7 @@
         var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
         if (cardIdValue == null)
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/", true);
             return;
         }
         _cardId = int.Parse(cardIdValue);
