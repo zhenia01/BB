@@ -30,13 +30,5 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
     </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Pages\Withdraw\Withdraw.razor.css" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="wwwroot\sqlite-dll-win64-x64-3340000.zip" />
-    </ItemGroup>
-
+    
 </Project>
