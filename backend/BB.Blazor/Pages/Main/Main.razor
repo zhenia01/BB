@@ -1,12 +1,9 @@
-@page "/main/{CardId:int}"
 @page "/main"
 @using Microsoft.IdentityModel.JsonWebTokens
 @using System.Security.Claims
 @using BB.BLL.Interfaces
 @using BB.Common.Dto.Balance
-@using BB.DAL.Entities
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using Microsoft.AspNetCore.Mvc.Razor.TagHelpers
 @inject NavigationManager NavigationManager
 @inject ProtectedSessionStorage ProtectedSessionStorage
 @attribute [Authorize]
@@ -23,7 +20,7 @@
 
 <h3 style="color: white;">@CardId</h3>
 
-<MainButtons Callback1="@Exit" Text1="Withdraw"
+<MainButtons Callback1="@Withdraw" Text1="Withdraw"
              Callback2="@Exit" Text2="Transfer"
              Callback3="@Topup" Text3="Top Up"
              Callback4="@Exit" Text4="Mobile Top Up"
@@ -49,10 +46,14 @@
 
     public BalanceDto BalanceDto { get; set; }
 
+    public void Withdraw()
+    {
+        NavigationManager.NavigateTo("/withdraw");
+    }
 
     public async Task Exit()
     {
-        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/"));
+        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/", true));
     }
 
     public void Topup()
@@ -62,18 +63,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!CardId.HasValue)
-        {
-            var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
             if (jtiValue != null)
             {
                 CardId = int.Parse(jtiValue);
             }
             else
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/", true);
             }
-        }
         await CheckBalance();
     }
 
