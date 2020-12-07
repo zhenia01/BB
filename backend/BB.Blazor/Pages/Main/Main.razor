@@ -10,12 +10,12 @@
 
 @inject ICheckingBranchService CheckingService
 
-<div class="root" style="color: green">
-    <p>Balance: @CheckingBalance</p>
+<div class="balance">
+    <p>Balance: @CheckingBalance ₴</p>
     @if (CreditBalance.HasValue)
-    {
-        <p>Credit Balance: @BalanceDto.CreditBalance</p>
-    }
+        {
+            <p>Credit Limit: @BalanceDto.CreditBalance ₴</p>
+        }
 </div>
 
 <h3 style="color: white;">@CardId</h3>

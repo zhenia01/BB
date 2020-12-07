@@ -24,11 +24,24 @@
 
     <ItemGroup>
       <Folder Include="Pages\Index" />
+      <Folder Include="Pages\Withdraw" />
     </ItemGroup>
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Pages\Withdraw\Withdraw.razor.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Pages\Withdraw\WithdrawValue.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="wwwroot\sqlite-dll-win64-x64-3340000.zip" />
     </ItemGroup>
 
 </Project>
