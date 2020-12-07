@@ -4,14 +4,16 @@ using BB.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BB.DAL.Migrations
 {
     [DbContext(typeof(BBContext))]
-    partial class BBContextModelSnapshot : ModelSnapshot
+    [Migration("20201204194932_DeleteRedundant")]
+    partial class DeleteRedundant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,41 +69,6 @@ namespace BB.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Cards");
-
-                    b.HasData(
-                        new
-                        {
-                            CardId = 1,
-                            CheckingBranchId = 1,
-                            CreditBranchId = 1,
-                            DepositBranchId = 1,
-                            IsBlocked = false,
-                            Number = "1111",
-                            Pin = "$2a$11$TsrLXCNWHnW.sTaTshjXS.JOmQPVGGxKxCLwwudeazweuEGlPXq/q",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            CardId = 2,
-                            CheckingBranchId = 2,
-                            CreditBranchId = 2,
-                            DepositBranchId = 2,
-                            IsBlocked = false,
-                            Number = "2222",
-                            Pin = "$2a$11$qicMzn2YNEv1MHpJ5ELFWue5N6R5akWvoBeYowWb6ml2PfYCId8Mq",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            CardId = 3,
-                            CheckingBranchId = 3,
-                            CreditBranchId = 3,
-                            DepositBranchId = 3,
-                            IsBlocked = false,
-                            Number = "3333",
-                            Pin = "$2a$11$.lsq6c0PZMDCrtrsH0tW0ONr7UKeVk7/z2DeQ0B0fgwWIPwSdXvu6",
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("BB.DAL.Entities.CheckingBranch", b =>
@@ -118,23 +85,6 @@ namespace BB.DAL.Migrations
                     b.HasKey("CheckingBranchId");
 
                     b.ToTable("CheckingBranches");
-
-                    b.HasData(
-                        new
-                        {
-                            CheckingBranchId = 1,
-                            Balance = 1000m
-                        },
-                        new
-                        {
-                            CheckingBranchId = 2,
-                            Balance = 100m
-                        },
-                        new
-                        {
-                            CheckingBranchId = 3,
-                            Balance = 250m
-                        });
                 });
 
             modelBuilder.Entity("BB.DAL.Entities.CreditBranch", b =>
@@ -159,26 +109,6 @@ namespace BB.DAL.Migrations
                     b.HasKey("CreditBranchId");
 
                     b.ToTable("CreditBranches");
-
-                    b.HasData(
-                        new
-                        {
-                            CreditBranchId = 1,
-                            Available = 1000m,
-                            Balance = 1000m
-                        },
-                        new
-                        {
-                            CreditBranchId = 2,
-                            Available = 500m,
-                            Balance = 500m
-                        },
-                        new
-                        {
-                            CreditBranchId = 3,
-                            Available = 100m,
-                            Balance = 10m
-                        });
                 });
 
             modelBuilder.Entity("BB.DAL.Entities.Deposit", b =>
@@ -224,20 +154,6 @@ namespace BB.DAL.Migrations
                     b.HasKey("DepositBranchId");
 
                     b.ToTable("DepositBranches");
-
-                    b.HasData(
-                        new
-                        {
-                            DepositBranchId = 1
-                        },
-                        new
-                        {
-                            DepositBranchId = 2
-                        },
-                        new
-                        {
-                            DepositBranchId = 3
-                        });
                 });
 
             modelBuilder.Entity("BB.DAL.Entities.User", b =>
@@ -260,26 +176,6 @@ namespace BB.DAL.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            FirstName = "Alex",
-                            LastName = "Slobozhenko"
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            FirstName = "John",
-                            LastName = "Travolta"
-                        },
-                        new
-                        {
-                            UserId = 3,
-                            FirstName = "Bill",
-                            LastName = "Gates"
-                        });
                 });
 
             modelBuilder.Entity("BB.DAL.Entities.Card", b =>

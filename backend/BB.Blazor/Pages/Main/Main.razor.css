@@ -1,0 +1,11 @@
+.balance{
+    width: 100%;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    font-size: 36px;
+}
+
+.balance p {
+    font-size: 28px;
+}
