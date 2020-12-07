@@ -10,6 +10,6 @@ namespace BB.BLL.Interfaces
         Task<CardDto> GetCardByNum(string cardNum);
         Task<ReadOnlyCollection<CardDto>> GetAll();
         Task<CardDto> Register(CardCredentialsDto cardCredentials);
-        Task<(CardDto card, string token)> Login(CardCredentialsDto cardCredentials);
+        Task<(CardDto card, string token)> Login(CardLoginDto cardLogin);
     }
 }

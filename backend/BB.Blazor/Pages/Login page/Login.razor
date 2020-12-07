@@ -18,13 +18,13 @@
         <img src="card.webp" class="card"/>
     </div>
 
-    <EditForm OnSubmit="@(OnLogin)" Model="@_credentials" class="card-form">
+    <EditForm OnSubmit="@(OnLogin)" Model="@_cardLogin" class="card-form">
         <DataAnnotationsValidator/>
-        <InputTextOnInput type="text" maxlength="4" @bind-Value="@_credentials.Number" class="card-number"/>
+        <InputTextOnInput type="text" maxlength="4" @bind-Value="@_cardLogin.Number" class="card-number"/>
 
         <label class="card-pin">
             PIN:
-            <InputText type="password" maxlength="4" @bind-Value="@_credentials.Pin"/>
+            <InputText type="password" maxlength="4" @bind-Value="@_cardLogin.Pin"/>
         </label>
 
         <button type="submit" class="submit-button"></button>
@@ -36,7 +36,7 @@
     [CascadingParameter]
     Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    private CardCredentialsDto _credentials = new()
+    private CardLoginDto _cardLogin = new()
     {
         Number = "",
         Pin = ""
@@ -57,7 +57,7 @@
     {
         try
         {
-            var (card, token) = await CardService.Login(_credentials);
+            var (card, token) = await CardService.Login(_cardLogin);
             await ProtectedSessionStore.SetAsync("authToken", token);
             await Task.Run(() => NavigationManager.NavigateTo($"/main/{card.CardId}"));
         }

@@ -49,9 +49,9 @@ namespace BB.BLL.Services
             return Mapper.Map<ReadOnlyCollection<CardDto>>(cards);
         }
         
-        public async Task<(CardDto card, string token)> Login(CardCredentialsDto cardCredentials)
+        public async Task<(CardDto card, string token)> Login(CardLoginDto cardLogin)
         {
-            (string number, string pin) = cardCredentials;
+            (string number, string pin) = cardLogin;
             
             Card card = await Context.Cards.SingleAsync(c => c.Number == number);
 
@@ -65,11 +65,11 @@ namespace BB.BLL.Services
 
         public async Task<CardDto> Register(CardCredentialsDto cardCredentials)
         {
-            (string number, string pin) = cardCredentials;
+            (string number, string pin, int userId) = cardCredentials;
             
             Card card = new()
             {
-                Number = number, Pin = BC.HashPassword(pin),
+                Number = number, Pin = BC.HashPassword(pin), UserId = userId,
                 CheckingBranch = new CheckingBranch
                 {   
                     Balance = 0m

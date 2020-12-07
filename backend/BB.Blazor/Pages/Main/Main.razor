@@ -23,7 +23,7 @@
 <MainButtons Callback1="@Withdraw" Text1="Withdraw"
              Callback2="@Exit" Text2="Transfer"
              Callback3="@Topup" Text3="Top Up"
-             Callback4="@Exit" Text4="Mobile Top Up"
+             Callback4="@MobileTopUp" Text4="Mobile Top Up"
              Callback5="@Exit" Text5="Credit Acc"
              Callback6="@Exit" Text6="Deposit Acc"
              Callback7="@Exit" Text7="Exit">
@@ -61,6 +61,10 @@
         NavigationManager.NavigateTo("/topup");
     }
 
+    public void MobileTopUp()
+    {
+        NavigationManager.NavigateTo("/mobile-topup");
+    }
     protected override async Task OnInitializedAsync()
     {
         var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
