@@ -10,6 +10,7 @@
 
 @inject ICheckingBranchService CheckingService
 @inject ICreditBranchService CreditBranchService
+@inject IDepositBranchService DepositBranchService
 
 
 <div class="balance">
@@ -25,7 +26,7 @@
              Callback3="@Topup" Text3="Top Up"
              Callback4="@MobileTopUp" Text4="Mobile Top Up"
              Callback5="@CreateCredit" Text5="Credit Acc"
-             Callback6="@Exit" Text6="Deposit Acc"
+             Callback6="@CreateDeposit" Text6="Deposit Acc"
              Callback7="@Exit" Text7="Exit">
 </MainButtons>
 
@@ -75,6 +76,18 @@
         else
         {
             NavigationManager.NavigateTo("/createCreditBranch");
+        }
+    }
+    
+    public async Task CreateDeposit()
+    {
+        if(await DepositBranchService.CheckExists(CardId ?? 0)){
+        
+            NavigationManager.NavigateTo("/depositCheck");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/createDepositBranch");
         }
     }
     

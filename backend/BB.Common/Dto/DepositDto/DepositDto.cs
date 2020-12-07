@@ -2,10 +2,10 @@ namespace BB.Common.Dto.DepositDto
 {
     public record DepositDto
     {
-        public decimal DepSum { get; init; }
-        public int Term { get; init; }
-        public bool PaymentsToDeposit { get; init; }
-        public bool CanBeTerminated { get; init; }
-        public int CardId { get; init; }
+        public decimal DepSum { get; set; }
+        public int Term { get; set; }
+        public bool PaymentsToDeposit { get; set; }
+        public bool CanBeTerminated { get; set; }
+        public int CardId { get; set; }
     }
 }

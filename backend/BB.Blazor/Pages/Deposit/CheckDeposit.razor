@@ -1,0 +1,94 @@
+@page "/depositCheck"
+@using BB.BLL.Interfaces
+@inject NavigationManager NavigationManager
+
+@inject ICardService CardService
+@inject IDepositBranchService DepositBranchService
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Security.Claims
+@using BB.BLL.Services
+@using BB.Common.Dto.DepositDto
+@using Microsoft.IdentityModel.JsonWebTokens
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<p class="text" xmlns="http://www.w3.org/1999/html">Create Deposit</p>
+<div class="text" style="color: green">
+    
+    <EditForm Model="DepositDto" OnSubmit="Deposit" style="display: grid">
+        <DataAnnotationsValidator/>
+        <label>
+            Deposit sum :
+            <InputNumber min="0.01" @bind-Value="@DepositDto.DepSum" class="value-input" style="display: inline-block;text-align: center;width: 30%;height: 2rem;font-size: 2rem;justify-self: center;margin-top: 1rem;"/>
+        </label>
+        <label>
+            Termine :
+            <InputNumber min="1" max="12" @bind-Value="@DepositDto.Term"/>
+        </label>
+        <label>
+            Can be terminated? :
+            <InputCheckbox @bind-Value="@DepositDto.CanBeTerminated"/>
+        </label>
+        <label>
+            Payments to deposit? :
+            <InputCheckbox @bind-Value="@DepositDto.PaymentsToDeposit"/>
+        </label>
+
+    </EditForm>
+    
+</div>
+
+<MainButtons
+    Text6="Deposit" Callback6="Deposit"
+    Text7="Back" Callback7="GoBack"
+    Text8="Delete Deposit Account" Callback8="Delete">
+</MainButtons>
+
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private static int _cardId;
+
+    public DepositDto DepositDto = new()
+    {
+        DepSum = 0,
+        Term = 1,
+        CanBeTerminated = true,
+        PaymentsToDeposit = true,
+    };
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/main");
+    }
+    
+    private async Task Delete()
+    {
+        await DepositBranchService.CreateDepositAccount(_cardId);
+        
+        NavigationManager.NavigateTo("/main");
+    }
+
+    public async Task Deposit()
+    {
+        DepositDto.CardId = _cardId;
+        await DepositBranchService.Deposit(DepositDto);
+        NavigationManager.NavigateTo("/main");
+    }
+    
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        if (cardIdValue == null)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+        _cardId = int.Parse(cardIdValue);
+    }
+    
+}
