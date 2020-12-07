@@ -11,7 +11,6 @@ namespace BB.Common.Dto.Card
         
         public int UserId { get; set; }
 
-
         public void Deconstruct(out string number, out string pin, out int userId)
         {
             number = Number;

@@ -48,7 +48,7 @@ namespace BB.BLL.Services
             {
                 var diff = amount - card.CheckingBranch.Balance;
 
-                if (card.CreditBranch.Balance >= diff)
+                if (card.CreditBranch != null && card.CreditBranch.Balance >= diff)
                 {
                     card.CheckingBranch.Balance = 0;
                     card.CreditBranch.Balance -= diff;

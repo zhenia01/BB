@@ -1,9 +1,8 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BB.Blazor.Pages.Topup
+namespace BB.Blazor.Pages.Withdraw
 {
-    public class TopupValue
+    public class WithdrawValue
     {
         [Required]
         [Range(0.01, double.MaxValue)]

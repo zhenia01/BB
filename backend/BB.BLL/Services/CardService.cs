@@ -74,7 +74,7 @@ namespace BB.BLL.Services
                 {   
                     Balance = 0m
                 },
-                User = await Context.Users.FindAsync(1)
+                User = await Context.Users.FindAsync(cardCredentials.UserId)
             };
             
             await Context.AddAsync(card);

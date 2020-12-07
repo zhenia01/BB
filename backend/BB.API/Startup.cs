@@ -7,6 +7,7 @@ using BB.BLL.Interfaces;
 using BB.BLL.MappingProfiles;
 using BB.BLL.Services;
 using BB.DAL.Context;
+using BB.DAL.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -153,5 +154,6 @@ namespace BB.API
                 context.Database.Migrate();
             }
         }
+        
     }
 }
