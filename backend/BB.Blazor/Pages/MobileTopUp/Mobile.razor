@@ -9,18 +9,18 @@
 @inject ICheckingBranchService CheckingBranchService
 
 <p class="text">Mobile Top up</p>
-   <EditForm OnSubmit="@Confirm" Model="Value"  class="mobile-form">
+   <EditForm OnSubmit="@Confirm" Model="Value"  class="mobile-form" style="display: grid">
        <DataAnnotationsValidator/>
-       <label>
+       <label class="elem text">
            Amount:
-           <InputNumber min="0.01" @bind-Value="@Value.Amount" class="card-number" />
+           <InputNumber min="0.01" @bind-Value="@Value.Amount" class="card-number value-input" style="display: inline-block;text-align: center;width: 30%;height: 2rem;font-size: 2rem;justify-self: center;margin-top: 1rem;"/>
        </label>
        
        <br>
 
-       <label class="phone-num">
+       <label class="phone-num elem text">
             Phone number:
-            <InputTextOnInput typer="text" @bind-Value="@Value.PhoneNumber"/>
+            <InputTextOnInput typer="text" @bind-Value="@Value.PhoneNumber" class="value-input"/>
         </label>
    </EditForm>
 

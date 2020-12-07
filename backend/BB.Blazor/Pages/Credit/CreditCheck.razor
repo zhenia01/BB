@@ -13,22 +13,19 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 
 
-<div class="credit" style="color: green">
-
+<div class="balance">
     <p>Credit Limit: @Available </p>
     <p>Credit Balance: @Balance </p>
     @if (Debt.HasValue)
     {
         <p>Credit Debt: @Debt </p>
     }
-        
-
 </div>
     
 
 <MainButtons
     Text7="Back" Callback7="GoBack"
-    Text8="Delete Credit Account" Callback8="Delete">
+    Text8="Delete Acc" Callback8="Delete">
 </MainButtons>
 
 
