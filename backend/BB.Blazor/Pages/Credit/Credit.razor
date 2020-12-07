@@ -1,0 +1,64 @@
+@page "/createCreditBranch"
+@using BB.BLL.Interfaces
+@inject NavigationManager NavigationManager
+
+@inject ICardService CardService
+@inject ICreditBranchService CreditBranchService
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Security.Claims
+@using Microsoft.IdentityModel.JsonWebTokens
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+
+<MainButtons
+    Text7="Back" Callback7="GoBack"
+    Text8="Create credit Account" Callback8="CreateAcc">
+</MainButtons>
+
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private int _cardId;
+    
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/main");
+    }
+
+    private async Task CreateAcc(){
+        if (! await CreditBranchService.CheckExists(_cardId))
+        {
+            try
+            {
+                await CreditBranchService.CreateCreditAccount(_cardId);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+            
+            }
+            NavigationManager.NavigateTo("/main");
+        }
+        else
+        {
+            
+        }
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        if (cardIdValue == null)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+        _cardId = int.Parse(cardIdValue);
+
+        await CreateAcc();
+    }
+    
+
+}

@@ -1,0 +1,102 @@
+@page "/main"
+@using Microsoft.IdentityModel.JsonWebTokens
+@using System.Security.Claims
+@using BB.BLL.Interfaces
+@using BB.Common.Dto.Balance
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject NavigationManager NavigationManager
+@inject ProtectedSessionStorage ProtectedSessionStorage
+@attribute [Authorize]
+
+@inject ICheckingBranchService CheckingService
+@inject ICreditBranchService CreditBranchService
+
+
+<div class="balance">
+    <p>Balance: @CheckingBalance ₴</p>
+    @if (CreditBalance.HasValue)
+        {
+            <p>Credit Limit: @BalanceDto.CreditBalance ₴</p>
+        }
+</div>
+
+<MainButtons Callback1="@Withdraw" Text1="Withdraw"
+             Callback2="@Exit" Text2="Transfer"
+             Callback3="@Topup" Text3="Top Up"
+             Callback4="@MobileTopUp" Text4="Mobile Top Up"
+             Callback5="@CreateCredit" Text5="Credit Acc"
+             Callback6="@Exit" Text6="Deposit Acc"
+             Callback7="@Exit" Text7="Exit">
+</MainButtons>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public int? CardId { get; set; }
+
+    [Parameter]
+    public decimal CheckingBalance { get; set; }
+
+    [Parameter]
+    public decimal? CreditBalance { get; set; }
+
+
+    public BalanceDto BalanceDto { get; set; }
+
+    public void Withdraw()
+    {
+        NavigationManager.NavigateTo("/withdraw", true);
+    }
+
+    public async Task Exit()
+    {
+        await ProtectedSessionStorage.DeleteAsync("authToken").AsTask().ContinueWith(_ => NavigationManager.NavigateTo("/", true));
+    }
+
+    public void Topup()
+    {
+        NavigationManager.NavigateTo("/topup", true);
+    }
+
+    public void MobileTopUp()
+    {
+        NavigationManager.NavigateTo("/mobile-topup", true);
+    }
+
+    public async Task CreateCredit()
+    {
+        if(await CreditBranchService.CheckExists(CardId ?? 0)){
+        
+            NavigationManager.NavigateTo("/creditCheck");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/createCreditBranch");
+        }
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var jtiValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+            if (jtiValue != null)
+            {
+                CardId = int.Parse(jtiValue);
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/", true);
+            }
+        await CheckBalance();
+    }
+
+    public async Task CheckBalance()
+    {
+        BalanceDto = await CheckingService.CheckBalance(CardId ?? 0);
+
+        CheckingBalance = BalanceDto.CheckingBalance;
+        CreditBalance = BalanceDto.CreditBalance;
+    }
+}

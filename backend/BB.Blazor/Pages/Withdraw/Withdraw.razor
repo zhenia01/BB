@@ -1,0 +1,68 @@
+@page "/withdraw"
+@using Microsoft.IdentityModel.JsonWebTokens
+@using System.Security.Claims
+@using BB.BLL.Interfaces
+@inject NavigationManager NavigationManager
+@inject ICheckingBranchService CheckingBranchService
+
+<p class="text">Withdraw</p>
+<EditForm Model="Value" OnSubmit="DoWithdraw" style="display: grid">
+    <DataAnnotationsValidator/>
+    <InputNumber min="0.01" @bind-Value="@Value.Value" class="value-input" style="display: inline-block;text-align: center;width: 30%;height: 2rem;font-size: 2rem;justify-self: center;margin-top: 1rem;"/>
+</EditForm>
+<p class="error text">@_error</p>
+<MainButtons
+    Text8="Back" Callback8="GoBack"
+    Text7="Clear" Callback7="Clear"
+    Text6="Withdraw" Callback6="DoWithdraw">
+</MainButtons>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private int _cardId;
+    public WithdrawValue Value = new() {Value = 0};
+    private string _error;
+    
+    private async Task DoWithdraw()
+    {
+        try
+        {
+            await CheckingBranchService.Withdraw(_cardId, Value.Value);
+            NavigationManager.NavigateTo("/main", true);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            Value.Value = 0;
+        }
+        catch (InvalidOperationException)
+        {
+            _error = "Not enough money";
+            Value.Value = 0;
+        }
+    }
+    
+    private void Clear()
+    {
+        Value.Value = 0;
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/main", true);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        if (cardIdValue == null)
+        {
+            NavigationManager.NavigateTo("/", true);
+            return;
+        }
+        _cardId = int.Parse(cardIdValue);
+    }
+
+}

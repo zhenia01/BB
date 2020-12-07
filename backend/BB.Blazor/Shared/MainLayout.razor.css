@@ -1,0 +1,21 @@
+.machine {
+    background-image: url(screen.jpg);
+
+    background-color: grey;
+    height: 100vh;
+    margin: 0 auto;
+    padding: 0;
+    width: 100vw;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-size: contain;
+}
+
+.screen {
+    width: 463px;
+    height: 50.5vh;
+    position: relative;
+    top: 16.7vh;
+    left: 25vw;
+    background: none;
+}

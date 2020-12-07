@@ -1,0 +1,95 @@
+@page "/mobile-topup"
+@using System.Security.Claims
+@using BB.BLL.Interfaces
+@using Microsoft.IdentityModel.JsonWebTokens
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+
+@inject NavigationManager NavigationManager
+@inject ICheckingBranchService CheckingBranchService
+
+<p class="text">Mobile Top up</p>
+   <EditForm OnSubmit="@Confirm" Model="Value"  class="mobile-form">
+       <DataAnnotationsValidator/>
+       <label>
+           Amount:
+           <InputNumber min="0.01" @bind-Value="@Value.Amount" class="card-number" />
+       </label>
+       
+       <br>
+
+       <label class="phone-num">
+            Phone number:
+            <InputTextOnInput typer="text" @bind-Value="@Value.PhoneNumber"/>
+        </label>
+   </EditForm>
+
+
+<MainButtons
+    Text8="Back" Callback8="GoBack"
+    Text7="Clear" Callback7="Clear"
+    Text6="Top up" Callback6="Confirm">
+</MainButtons>
+
+@code {
+
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private int _cardId;
+
+    public MobileValue Value = new()
+    {
+        Amount = 0,
+        PhoneNumber = ""
+    }; 
+    
+    private async Task Confirm()
+    {
+        const string matchPhonePattern =
+            @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}";
+        var rx = new Regex(matchPhonePattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        var matches = rx.Matches(Value.PhoneNumber);
+
+        if (matches.Count > 0)
+        {
+
+            try
+            {
+                await CheckingBranchService.Withdraw(_cardId, Value.Amount);
+                NavigationManager.NavigateTo("/main", true);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Clear();
+            }
+        }
+        else
+        {
+            Value.PhoneNumber = "";
+        }
+    }
+
+    private void Clear()
+    {
+        Value.Amount = 0;
+        Value.PhoneNumber = "";
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/main", true);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var cardIdValue = (await AuthenticationStateTask).User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        if (cardIdValue == null)
+        {
+            NavigationManager.NavigateTo("/", true);
+            return;
+        }
+        _cardId = int.Parse(cardIdValue);
+    }
+
+}
